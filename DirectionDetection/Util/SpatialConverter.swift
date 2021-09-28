@@ -183,6 +183,24 @@ extension Spectrum {
         return fanShapedPattern
     }()
     
+    private static let angleCorrectionValue: [Int: Float] = {
+        // 扇の大きさの偏りを算出
+        var occurrences: [Int:Int] = [:]
+        fanShapedAngleTable.forEach {
+            guard $0 != angleNone else { return }
+            occurrences[$0, default: 0] += 1
+        }
+        // 一番大きい領域を持つ角度
+        let max = occurrences.max { $0.value < $1.value }
+        
+        var angleCorrectionValue: [Int: Float] = [:]
+        let maxValue = max?.value ?? 1
+        occurrences.forEach {
+            angleCorrectionValue[$0.key] = Float(maxValue) / Float($0.value)
+        }
+        return angleCorrectionValue
+    }()
+    
     // 強い周波数成分がある方向をdegreeで返す
     func direction() -> Int? {
         var angleQuantity: [Int: Int] = [:]
@@ -195,23 +213,23 @@ extension Spectrum {
             // 100dB以下の信号はノイズとみなして捨てる
             guard value > 100 else { return }
             
-            if let currentAngle = angleQuantity[angle] {
-                angleQuantity[angle] = currentAngle + Int(value)
-            } else {
-                angleQuantity[angle] = Int(value)
-            }
+            angleQuantity[angle, default: 0] += Int(value)
         }
         
-        // TODO: 扇状の領域のテーブル上の偏りを補正
+        // 扇状の領域のテーブル上の大きさの偏りを補正
+        angleQuantity.forEach {
+            if let correction = Spectrum.angleCorrectionValue[$0.key] {
+                let correctionValue = Float($0.value) * correction
+                angleQuantity.updateValue(Int(correctionValue), forKey: $0.key)
+            }
+        }
         
         let max = angleQuantity.max { $0.value < $1.value }
         
         // 最大値であっても小さければ方向成分がみつからなかったという判定
-        if let maxValue = max?.value, maxValue < 800 {
+        if let maxValue = max?.value, maxValue < 700 {
             return nil
         }
-        
-        // TODO: 直交する角度に変換するのは利用側とする
         
         return max?.key
     }

@@ -6,6 +6,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var videoImageView: UIImageView!
     @IBOutlet weak var spectrumImageView: UIImageView!
     @IBOutlet weak var reflectSpectrumImageView: UIImageView!
+    private weak var indicatorView: IndicatorView!
     
     let ciContext = CIContext(options: [
             .cacheIntermediates : false
@@ -25,6 +26,11 @@ class ViewController: UIViewController {
         imageCapture.session.startRunning()
         // 処理対象の画像サイズ取得
         imageSize = spatialConverter.imageSize
+        // 矢印
+        let indicatorView = IndicatorView()
+        indicatorView.position = CGPoint(x: 75,y: 75)
+        videoImageView.addSubview(indicatorView)
+        self.indicatorView = indicatorView
     }
 }
 
@@ -61,11 +67,22 @@ extension ViewController: ImageCaptureDelegate {
         let reflectSpectrum = spectrum.reflect()
         guard let reflectSpectrumImage = reflectSpectrum.cgImage() else { return }
         
+        // 方向成分を取得
+        let direction = spectrum.direction()
+        
         // 画像を表示
         DispatchQueue.main.async {
             self.videoImageView.image = UIImage(cgImage: baseImage)
             self.spectrumImageView.image = UIImage(cgImage: spectrumImage)
             self.reflectSpectrumImageView.image = UIImage(cgImage: reflectSpectrumImage)
+            
+            // 直交する方向に補正し矢印表示
+            if let direction = direction {
+                self.indicatorView.isHidden = false
+                self.indicatorView.orientation = CGFloat(direction) * -1 + 90
+            } else {
+                self.indicatorView.isHidden = true
+            }
         }
     }
 }
