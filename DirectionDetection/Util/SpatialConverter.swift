@@ -79,7 +79,6 @@ class SpatialConverter {
                     vDSP.absolute(splitComplex, result: &amplitudeSpectrum)
                     // 振幅スペクトルをパワースペクトル[dB]に変換
                     powerSpectrum = vDSP.amplitudeToDecibels(amplitudeSpectrum, zeroReference: 1)
-                    // TODO: 方向を示さない弱い信号はclipするか。
                     // 上半分と下半分のデータを入れ替え
                     powerSpectrum.withUnsafeMutableBufferPointer { pointer in
                         let p1 = UnsafeMutablePointer(pointer.baseAddress!)
@@ -136,5 +135,84 @@ struct Spectrum {
         return Spectrum(values: values.reversed(),
                         width: width,
                         height: height)
+    }
+}
+
+extension Spectrum {
+    // 利用しない領域の値
+    private static let angleNone = 999
+    
+    // 128x256で扇状の領域別に代表角度を格納したテーブル
+    private static let fanShapedAngleTable: [Int] = {
+        
+        let width = Const.imageSize / 2
+        let height = Const.imageSize
+        let yCenter = Const.imageSize / 2
+        
+        var fanShapedPattern = [Int](repeating: angleNone, count: width * height)
+        
+        for y in 0 ..< height {
+            for x in 0 ..< width {
+                let xf = Float(x) + 0.01
+                let yf = Float(yCenter-y)
+                let distance = sqrtf(xf*xf + yf*yf)
+                if distance > Float(width) {
+                    continue
+                }
+                let angle = atanf(yf / xf) * 180.0 / Float.pi
+                let roundedAngle = Int(angle.rounded())
+                
+                let centerAngle: Int
+                // 10度間隔で0〜の番号（インデックス）を算出
+                switch roundedAngle {
+                case -90 ... -85:
+                    centerAngle = 90
+                case -84 ... 0:
+                    centerAngle = Int(round(Float(roundedAngle) / 10.0 + 0.1)) * 10
+                case 1 ... 85:
+                    centerAngle = Int(round(Float(roundedAngle) / 10.0 - 0.1)) * 10
+                case 86 ... 90:
+                    centerAngle = 90
+                default:
+                    continue
+                }
+                fanShapedPattern[y * width + x] = centerAngle
+            }
+        }
+        
+        return fanShapedPattern
+    }()
+    
+    // 強い周波数成分がある方向をdegreeで返す
+    func direction() -> Int? {
+        var angleQuantity: [Int: Int] = [:]
+        
+        // TODO: 周波数領域全体を計算せずに、低周波領域の計算だけで判定できそう
+        values.enumerated().forEach { index, value in
+            let angle = Self.fanShapedAngleTable[index]
+            guard value.isFinite, angle != Self.angleNone else { return }
+            
+            // 100dB以下の信号はノイズとみなして捨てる
+            guard value > 100 else { return }
+            
+            if let currentAngle = angleQuantity[angle] {
+                angleQuantity[angle] = currentAngle + Int(value)
+            } else {
+                angleQuantity[angle] = Int(value)
+            }
+        }
+        
+        // TODO: 扇状の領域のテーブル上の偏りを補正
+        
+        let max = angleQuantity.max { $0.value < $1.value }
+        
+        // 最大値であっても小さければ方向成分がみつからなかったという判定
+        if let maxValue = max?.value, maxValue < 800 {
+            return nil
+        }
+        
+        // TODO: 直交する角度に変換するのは利用側とする
+        
+        return max?.key
     }
 }
