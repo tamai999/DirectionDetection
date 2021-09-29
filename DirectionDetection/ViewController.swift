@@ -71,8 +71,9 @@ extension ViewController: ImageCaptureDelegate {
         let direction = spectrum.direction()
         
         // 画像を表示
+        let videoImage = ciContext.createCGImage(croppedImage, from: croppedImage.extent)!
         DispatchQueue.main.async {
-            self.videoImageView.image = UIImage(cgImage: baseImage)
+            self.videoImageView.image = UIImage(cgImage: videoImage)
             self.spectrumImageView.image = UIImage(cgImage: spectrumImage)
             self.reflectSpectrumImageView.image = UIImage(cgImage: reflectSpectrumImage)
             
