@@ -10,6 +10,7 @@
 		97419FC927004D2F00FE6E42 /* SpatialConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97419FC827004D2F00FE6E42 /* SpatialConverter.swift */; };
 		97419FCB2700514D00FE6E42 /* ImageCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97419FCA2700514D00FE6E42 /* ImageCapture.swift */; };
 		97419FCD27005D6400FE6E42 /* CIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97419FCC27005D6300FE6E42 /* CIImageExtension.swift */; };
+		976E2FC32703BA5C00CB8707 /* IndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976E2FC22703BA5C00CB8707 /* IndicatorView.swift */; };
 		97EE547826FC828C00BD2488 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EE547726FC828C00BD2488 /* AppDelegate.swift */; };
 		97EE547A26FC828C00BD2488 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EE547926FC828C00BD2488 /* SceneDelegate.swift */; };
 		97EE547C26FC828C00BD2488 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EE547B26FC828C00BD2488 /* ViewController.swift */; };
@@ -22,6 +23,7 @@
 		97419FC827004D2F00FE6E42 /* SpatialConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialConverter.swift; sourceTree = "<group>"; };
 		97419FCA2700514D00FE6E42 /* ImageCapture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCapture.swift; sourceTree = "<group>"; };
 		97419FCC27005D6300FE6E42 /* CIImageExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CIImageExtension.swift; sourceTree = "<group>"; };
+		976E2FC22703BA5C00CB8707 /* IndicatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IndicatorView.swift; sourceTree = "<group>"; };
 		97EE547426FC828C00BD2488 /* DirectionDetection.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DirectionDetection.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		97EE547726FC828C00BD2488 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		97EE547926FC828C00BD2488 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -75,6 +77,7 @@
 				97EE547726FC828C00BD2488 /* AppDelegate.swift */,
 				97EE547926FC828C00BD2488 /* SceneDelegate.swift */,
 				97EE547B26FC828C00BD2488 /* ViewController.swift */,
+				976E2FC22703BA5C00CB8707 /* IndicatorView.swift */,
 				97419FC727004D1B00FE6E42 /* Util */,
 				97EE547D26FC828C00BD2488 /* Main.storyboard */,
 				97EE548026FC828E00BD2488 /* Assets.xcassets */,
@@ -158,6 +161,7 @@
 				97419FCB2700514D00FE6E42 /* ImageCapture.swift in Sources */,
 				97EE547C26FC828C00BD2488 /* ViewController.swift in Sources */,
 				97EE547826FC828C00BD2488 /* AppDelegate.swift in Sources */,
+				976E2FC32703BA5C00CB8707 /* IndicatorView.swift in Sources */,
 				97EE547A26FC828C00BD2488 /* SceneDelegate.swift in Sources */,
 				97419FC927004D2F00FE6E42 /* SpatialConverter.swift in Sources */,
 				97419FCD27005D6400FE6E42 /* CIImageExtension.swift in Sources */,
